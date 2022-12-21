@@ -1,16 +1,11 @@
-import javax.management.timer.Timer;
 import javax.swing.*;
-
 import javax.swing.plaf.DimensionUIResource;
 import javax.swing.plaf.FontUIResource;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-
 
 
 public class App extends TimerTask implements Action{
@@ -25,7 +20,6 @@ public class App extends TimerTask implements Action{
     boolean isRunning = false;
     private Thread t1;
     double secondRate;
-    final int MAX_TIME = 604800; //a week of seconds
 
 
     public void addInterface() {
@@ -49,33 +43,30 @@ public class App extends TimerTask implements Action{
         b1.addActionListener(this);
         panel.add(b1);
 
+        ImageIcon img = new ImageIcon("image.png");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
-        frame.setSize(290, 200);
+        frame.setIconImage(img.getImage());
+        frame.setSize(300, 150);
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
+        frame.setAlwaysOnTop(true);
         frame.setVisible(true);
         frame.getContentPane().add(panel);
-
-        //frame.pack();
        
     }
 
     public synchronized void countBalance() throws InterruptedException{
 
-            //Clock clock = Clock.systemDefaultZone();
+            l1.setVisible(false); 
+            input.setVisible(false);
+            b1.setVisible(false);
+            frame.setResizable(true);
 
-            // double hourlyRate = Double.parseDouble(input.getText());
-            // secondRate = hourlyRate/3600;
-            // JLabel l2 = new JLabel("$ 0");
-            
             isRunning = true;
             this.t1 = new Thread(this, "output");
             this.t1.start();
-            
-            // panel.add(test);
-            //updateLabel(secondRate, l2);
 
             panel.revalidate();
             panel.repaint();
@@ -91,7 +82,7 @@ public class App extends TimerTask implements Action{
 
         long lastTime = System.nanoTime();
         long timer = System.currentTimeMillis();
-        final double ns = 1000000000.0/60; //16,666ns or .016666s
+        final double ns = 1000000000.0/60; //0.016666s
         double delta = 0;
         int fps = 0;
 
@@ -107,14 +98,12 @@ public class App extends TimerTask implements Action{
 
             if(System.currentTimeMillis() - timer >1000) { //how often the fps will update
                 timer+= 1000;
-                //this.frame.setTitle(" "+ fps + "fps");
+                //this.frame.setTitle(" "+ fps + " fps"); //
                 fps=0;
             }
 
-
         }
 
-        //stopEngine();
     }
 
     public void updateLabel(double rate, JLabel label){
@@ -124,7 +113,7 @@ public class App extends TimerTask implements Action{
             label.setText("$ "+String.format("%.2f", total));
             label.setFont(new FontUIResource("Serif", Font.BOLD, 32));
             label.setForeground(Color.green);
-            //panel.add(label);   
+
             panel.revalidate();
             panel.repaint();
             
@@ -146,7 +135,6 @@ public class App extends TimerTask implements Action{
                 try {
                     countBalance();
                 } catch (InterruptedException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
                 pressCount++;
@@ -195,9 +183,4 @@ public class App extends TimerTask implements Action{
         
     }
 
-    // @Override
-    // public void run() {
-    //     // TODO Auto-generated method stub
-        
-    // } 
 }
